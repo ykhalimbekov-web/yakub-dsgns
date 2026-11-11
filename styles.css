@@ -1,0 +1,317 @@
+/* Figma: WVPnwk9WcQrKTAmWtbYAm9, frame 43:333 "Desktop - 1" (1440 wide). */
+
+:root {
+  --ink: #000;
+  --muted: #848484;
+  --paper: #fff;
+  --surface: rgba(248, 248, 248, 0.82); /* = rgba(220,220,220,.2) on white, opaque enough over images when the header sticks */
+  --tile-empty: #f3f3f3;
+  --radius: 20px;
+  --content: 1140px;
+  --gutter: 24px;
+  --col-gap: 13.5px; /* 3 × 371 + 2 × 13.5 = 1140 */
+  --row-gap: 13px;
+  --bar-h: 55px;
+  --bar-pad: 35px;
+  --font: 'Manrope', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-weight: 400;
+}
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+ul { list-style: none; margin: 0; padding: 0; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+.container {
+  width: min(var(--content), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+/* Rounded light bars used by the header and footer. */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: var(--bar-h);
+  padding-inline: var(--bar-pad);
+  background: var(--surface);
+  border-radius: var(--radius);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+/* Logo: "YAKUB." SemiBold + "DESIGN" Light, 24px. Clickable, never underlined. */
+.logo {
+  font-size: 24px;
+  line-height: 1.06;
+  font-weight: 300;
+  white-space: nowrap;
+}
+.logo b { font-weight: 600; }
+
+/* Header: main bar spans grid columns 1–2, meta bar sits over column 3. y 30, 40px above the grid. */
+.site-header {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  padding-top: 30px;
+  font-size: 16px;
+  line-height: 1.12;
+  /* Stays in place while the page scrolls. */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.bar-main { grid-column: 1 / 3; }
+.disciplines { margin: 0; white-space: nowrap; }
+.lang { display: flex; gap: 27px; }
+.lang button {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--muted);
+}
+.lang button[aria-pressed="true"] { color: var(--ink); }
+.plain { white-space: nowrap; }
+
+/* Work grid: cards of 371 × 282, radius 20, three per row. */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--row-gap) var(--col-gap);
+  margin-top: 40px;
+}
+.tile {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 371 / 282;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--tile-empty);
+  cursor: pointer;
+}
+.tile img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Hover / focus: the card blurs and tints to its own image tone (--tone);
+   project name and a short description appear, left-aligned at the bottom. */
+.tile figcaption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 28px 30px;
+  background: color-mix(in srgb, var(--tone, #000) 72%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  color: #fff;
+  text-align: left;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+.tile-name { font-size: 24px; font-weight: 600; line-height: 1.06; }
+.tile-desc { max-width: 280px; font-size: 14px; font-weight: 400; line-height: 1.3; opacity: .85; }
+.tile:hover figcaption,
+.tile:focus-visible figcaption { opacity: 1; }
+.tile:focus-visible { outline-offset: 3px; }
+/* Touch screens have no hover: show the caption on a soft gradient instead. */
+@media (hover: none) {
+  .tile figcaption {
+    opacity: 1;
+    padding: 16px 20px;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: linear-gradient(to top, color-mix(in srgb, var(--tone, #000) 85%, transparent), transparent 65%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile figcaption { transition: none; }
+}
+
+/* Footer: full-width bar, ~108px below the content, 35px from the page bottom. */
+.site-footer {
+  margin-top: 108px;
+  padding-bottom: 35px;
+}
+.copyright { font-size: 14px; line-height: 1.06; }
+.footer-mail { font-size: 14px; font-weight: 500; line-height: 1.06; }
+
+/* ---------- About / Contacts page (Figma frame 58:75) ---------- */
+
+/* Header is shared with the home page; here the meta bar holds "Projects" instead of "About / Contacts". */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--row-gap) var(--col-gap);
+  margin-top: 40px;
+}
+.card {
+  border-radius: var(--radius);
+  padding: 25px 35px 30px;
+  font-size: 14px;
+  line-height: 1.12;
+}
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.06;
+}
+.card p { margin: 0; }
+.card p + p { margin-top: 16px; }
+.card-green { background: #e9ffe0; }
+.card-blue { background: #e7f8ff; }
+.card-rose { background: #ffeaea; }
+.card-grey { background: #f7f7f7; }
+/* Row 1: portrait (371 × 259) + About me (755 × 259). Row 2: three 371 × 605 discipline cards. */
+.card-photo { margin: 0; padding: 0; overflow: hidden; min-height: 259px; background: #f7f7f7; }
+.card-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.card-about { grid-column: 2 / 4; min-height: 259px; }
+.card-about p { max-width: 654px; }
+.card-green, .card-blue, .card-rose { min-height: 605px; }
+.card-green p, .card-blue p, .card-rose p { max-width: 280px; }
+
+/* Contact card: heading on the left, a 534px form column on the right. */
+.card-contact {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 534px;
+  gap: 24px;
+  min-height: 437px;
+  padding: 25px 35px 35px;
+  background: #eaf1ff;
+}
+.card-contact h2 {
+  white-space: pre-line;
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.2;
+}
+.contact-form { display: flex; flex-direction: column; gap: 12px; }
+.contact-form input:not([type="checkbox"]) {
+  height: 60px;
+  padding: 0 21px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: #fff;
+  font: 500 16px/1.12 var(--font);
+  color: var(--ink);
+}
+.contact-form input::placeholder { color: #a7a7a7; opacity: 1; }
+.contact-form input:focus { outline: none; border-color: #000; }
+.contact-form input:not([type="checkbox"]):not(:placeholder-shown):invalid { border-color: #d64545; }
+
+.consent {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.12;
+  cursor: pointer;
+}
+.consent input { position: absolute; opacity: 0; width: 25px; height: 25px; margin: 0; cursor: pointer; }
+.consent-box {
+  flex: 0 0 25px;
+  height: 25px;
+  border-radius: 8px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+}
+.consent input:checked + .consent-box::after {
+  content: "";
+  width: 11px;
+  height: 6px;
+  border: solid #000;
+  border-width: 0 0 2px 2px;
+  transform: translateY(-2px) rotate(-45deg);
+}
+.consent input:focus-visible + .consent-box { outline: 2px solid #000; outline-offset: 2px; }
+.form-status { margin: 0; min-height: 16px; font-size: 13px; line-height: 1.2; }
+.submit {
+  margin-top: auto;
+  height: 60px;
+  border: 0;
+  border-radius: 14px;
+  background: #000;
+  color: #fff;
+  font: 600 20px/1.06 var(--font);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+.submit:hover { background: #2a2a2a; }
+
+/* Social buttons: four 275 × 55 pills, 13px apart. */
+.socials {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+.social {
+  display: grid;
+  place-items: center;
+  height: 55px;
+  border-radius: var(--radius);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.06;
+}
+.social[href] { cursor: pointer; transition: filter 200ms ease; }
+.social[href]:hover { filter: brightness(.96); }
+.social-green { background: #e9ffe0; }
+.social-blue { background: #e7f8ff; }
+.social-indigo { background: #eaf1ff; }
+.social-rose { background: #ffeaea; }
+
+@media (max-width: 900px) {
+  .site-header { grid-template-columns: 1fr; row-gap: var(--row-gap); }
+  .bar-main { grid-column: auto; }
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .site-footer { margin-top: 64px; }
+  .about-grid { grid-template-columns: 1fr; }
+  .card-about, .card-contact, .socials { grid-column: auto; }
+  .card-green, .card-blue, .card-rose, .card-about { min-height: 0; }
+  .card-photo { min-height: 0; aspect-ratio: 371 / 259; }
+  .card-green p, .card-blue p, .card-rose p, .card-about p { max-width: 560px; }
+  .card-contact { grid-template-columns: 1fr; min-height: 0; }
+  .submit { margin-top: 12px; }
+  .socials { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  :root { --gutter: 16px; --bar-pad: 20px; }
+  .site-header { padding-top: 16px; font-size: 16px; }
+  .bar-main { flex-direction: column; align-items: flex-start; gap: 10px; padding-block: 16px; }
+  .work-grid { grid-template-columns: 1fr; margin-top: 24px; }
+  .site-footer { margin-top: 48px; padding-bottom: 16px; }
+  .bar-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px var(--bar-pad); }
+  .about-grid { margin-top: 24px; }
+  .card { padding: 22px 20px 24px; }
+  .card-photo { padding: 0; }
+  .card-contact h2 { font-size: 26px; }
+  .social { font-size: 18px; }
+}
