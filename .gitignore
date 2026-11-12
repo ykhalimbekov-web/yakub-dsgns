@@ -4,3 +4,9 @@ desktop.ini
 .vscode/
 .claude/
 *.log
+
+# source files for project pages (not published)
+assets/work/IK/
+assets/work/IK.pdf
+assets/work/Menu.png
+assets/work/Лама/

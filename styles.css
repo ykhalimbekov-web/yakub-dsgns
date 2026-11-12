@@ -304,8 +304,34 @@ ul { list-style: none; margin: 0; padding: 0; }
 
 @media (max-width: 600px) {
   :root { --gutter: 16px; --bar-pad: 20px; }
-  .site-header { padding-top: 16px; font-size: 16px; }
-  .bar-main { flex-direction: column; align-items: flex-start; gap: 10px; padding-block: 16px; }
+  /* Mobile menu (Figma 115:583): two stacked bars.
+     Row 1: logo + En / Ru. Row 2: Branding / Packaging / Arts + About / Contacts. */
+  .site-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 0;
+    row-gap: 8px;
+    padding-top: 16px;
+    font-size: 14px;
+  }
+  .site-header .bar { display: contents; }
+  .site-header .logo,
+  .site-header .lang,
+  .site-header .disciplines,
+  .site-header .plain {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    background: rgba(248, 248, 248, 0.94);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .site-header .lang { font-size: 15px; }
+  .site-header .logo { grid-area: 1 / 1; padding-left: var(--bar-pad); border-radius: var(--radius) 0 0 var(--radius); }
+  .site-header .lang { grid-area: 1 / 2; padding: 0 var(--bar-pad) 0 12px; gap: 20px; border-radius: 0 var(--radius) var(--radius) 0; }
+  .site-header .disciplines { grid-area: 2 / 1; margin: 0; padding-left: var(--bar-pad); border-radius: var(--radius) 0 0 var(--radius); }
+  .site-header .plain { grid-area: 2 / 2; padding: 0 var(--bar-pad) 0 12px; border-radius: 0 var(--radius) var(--radius) 0; text-align: right; }
+  .site-header .disciplines { display: block; padding-block: 16px; }
+  .site-header .disciplines, .site-header .plain { white-space: normal; line-height: 1.2; }
   .work-grid { grid-template-columns: 1fr; margin-top: 24px; }
   .site-footer { margin-top: 48px; padding-bottom: 16px; }
   .bar-footer { flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px var(--bar-pad); }
@@ -314,4 +340,99 @@ ul { list-style: none; margin: 0; padding: 0; }
   .card-photo { padding: 0; }
   .card-contact h2 { font-size: 26px; }
   .social { font-size: 18px; }
+}
+
+/* ---------- Project page: Iz Korzinki (from IK.pdf) ---------- */
+.case { display: grid; gap: var(--row-gap); margin-top: 40px; }
+.case-intro {
+  display: grid;
+  grid-template-columns: 349px minmax(0, 1fr);
+  gap: 24px;
+  padding: 35px;
+  background: #eaf1ff;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.case-title h1 { margin: 0; font-size: 42px; font-weight: 600; line-height: 1.06; }
+.case-title p { margin: 12px 0 0; font-size: 15px; }
+.case-text h2 { margin: 0 0 12px; font-size: 15px; font-weight: 600; line-height: 1.2; }
+.case-text p { margin: 0 0 32px; max-width: 620px; }
+.case-text ul { margin: 0; }
+.case-text li { position: relative; padding-left: 14px; }
+.case-text li::before { content: "–"; position: absolute; left: 0; }
+
+.case-shot {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #f7f7f7;
+  aspect-ratio: 1140 / 806;
+}
+.case-shot > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.case-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+  aspect-ratio: auto;
+  padding: 40px 24px 28px;
+}
+.case-pair figure { margin: 0; text-align: center; }
+.case-pair img { display: block; width: min(100%, 420px); height: auto; margin: 0 auto; mix-blend-mode: multiply; }
+.case-pair figcaption { margin-top: 10px; font-size: 14px; }
+
+.case-future { color: #fff; }
+.case-future-text {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 46%;
+  padding: 35px;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.case-future-text h2 { margin: 0 0 16px; font-size: 24px; font-weight: 600; line-height: 1.06; }
+.case-future-text p { margin: 0 0 16px; }
+.case-future-text ul { display: grid; gap: 14px; }
+.case-future-text li { position: relative; padding-left: 14px; }
+.case-future-text li::before { content: "–"; position: absolute; left: 0; }
+
+.all-projects {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 275px;
+  height: 55px;
+  margin-top: 40px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 18px;
+  font-weight: 600;
+  transition: background 200ms ease;
+}
+.all-projects:hover { background: #ececec; }
+.tile-link { display: block; border-radius: var(--radius); }
+
+@media (max-width: 900px) {
+  .case-intro { grid-template-columns: 1fr; }
+  .case-future-text { position: static; width: auto; background: #0b1b45; padding: 24px 20px; }
+  .case-future { aspect-ratio: auto; display: flex; flex-direction: column; }
+  .case-future > img { height: auto; aspect-ratio: 1140 / 806; }
+  .case-pair { grid-template-columns: 1fr 1fr; padding: 24px 12px 20px; }
+}
+@media (max-width: 600px) {
+  .case { margin-top: 24px; }
+  .case-title h1 { font-size: 34px; }
+  .case-intro { padding: 22px 20px 24px; }
+  .all-projects { margin-top: 24px; }
+}
+.tile-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.tile-link:focus-visible .tile figcaption { opacity: 1; }
+@media (max-width: 1100px) and (min-width: 901px) {
+  .case-future-text { width: 54%; padding: 28px; font-size: 13.5px; }
+  .case-future-text ul { gap: 10px; }
 }
