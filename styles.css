@@ -170,7 +170,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 .card {
   border-radius: var(--radius);
   padding: 25px 35px 30px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.12;
 }
 .card h2 {
