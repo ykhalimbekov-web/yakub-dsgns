@@ -154,3 +154,98 @@ if (form) {
     window.location.href = `mailto:helloyakub@gmail.com?subject=${encodeURIComponent(t('form.subject'))}&body=${encodeURIComponent(body)}`;
   });
 }
+
+// Background music: a YouTube track played as audio only. Browsers block sound
+// until the visitor interacts, so it starts from the sound button (or from the
+// first click on the next page if the visitor left it on), and it resumes from
+// the saved position on every page.
+(() => {
+  const VIDEO = '-yRDPEZ6U3w';
+  Object.assign(strings.en, { 'music.on': 'Turn music off', 'music.off': 'Turn music on' });
+  Object.assign(strings.ru, { 'music.on': 'Выключить музыку', 'music.off': 'Включить музыку' });
+
+  const read = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
+  const write = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+
+  let state = read('music') === 'on' ? 'pending' : 'off'; // off | pending | on
+  let player = null;
+  let timer = null;
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'music-toggle';
+  btn.innerHTML =
+    '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/>' +
+    '<g class="music-waves"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></g>' +
+    '<path class="music-off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+  const holder = document.createElement('div');
+  holder.className = 'music-yt';
+  holder.innerHTML = '<div id="music-yt"></div>';
+  document.body.append(btn, holder);
+
+  function render() {
+    const playing = state === 'on';
+    btn.setAttribute('aria-pressed', String(playing));
+    btn.classList.toggle('is-on', playing);
+    btn.setAttribute('aria-label', t(playing ? 'music.on' : 'music.off'));
+    btn.title = btn.getAttribute('aria-label');
+  }
+
+  function saveTime() {
+    try { write('music-time', String(Math.floor(player.getCurrentTime()))); } catch {}
+  }
+
+  function loadApi() {
+    return new Promise((resolve) => {
+      if (window.YT && window.YT.Player) return resolve();
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => { if (prev) prev(); resolve(); };
+      const s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(s);
+    });
+  }
+
+  async function start() {
+    state = 'on';
+    write('music', 'on');
+    render();
+    if (player) { player.playVideo(); return; }
+    await loadApi();
+    player = new YT.Player('music-yt', {
+      width: 200,
+      height: 200,
+      videoId: VIDEO,
+      playerVars: { controls: 0, loop: 1, playlist: VIDEO, playsinline: 1, start: parseInt(read('music-time'), 10) || 0 },
+      events: {
+        onReady: (e) => { e.target.setVolume(35); if (state === 'on') e.target.playVideo(); },
+        onStateChange: (e) => {
+          if (e.data === 1 && !timer) timer = setInterval(saveTime, 2000);
+        },
+        // The video cannot be embedded or was removed: switch the button off quietly.
+        onError: () => { state = "off"; write("music", "off"); render(); },
+      },
+    });
+  }
+
+  function stop() {
+    state = 'off';
+    write('music', 'off');
+    if (player) { saveTime(); player.pauseVideo(); }
+    render();
+  }
+
+  btn.addEventListener('click', () => { if (state === 'on') stop(); else start(); });
+  buttons.forEach((b) => b.addEventListener('click', render));
+  window.addEventListener('pagehide', () => { if (player) saveTime(); });
+
+  if (state === 'pending') {
+    const resume = (e) => {
+      if (state !== 'pending' || btn.contains(e.target)) return;
+      start();
+    };
+    ['pointerdown', 'keydown'].forEach((ev) => document.addEventListener(ev, resume, { once: true }));
+  }
+  render();
+})();
