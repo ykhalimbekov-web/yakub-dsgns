@@ -25,7 +25,7 @@ jobs:
       - name: Collect site files
         run: |
           mkdir dist
-          cp index.html about.html styles.css app.js favicon.svg favicon.png iz-korzinki.html dist/
+          cp index.html about.html styles.css app.js favicon.svg favicon.png iz-korzinki.html lama.html dist/
           cp -r assets dist/assets
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
